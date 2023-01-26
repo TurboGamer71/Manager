@@ -23,5 +23,4 @@ module.exports = {
     activité: "Her-Network",
     version: "1.0",
   }
-
 }
