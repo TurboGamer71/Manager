@@ -2,8 +2,10 @@
 
 CREATE TABLE `users` ( `id` VARCHAR(255) NOT NULL , `email` TEXT NOT NULL , `balance` TEXT NOT NULL , `time` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
 
-2: Configurez les options de connexion dans le fichier config (/config/config.js)
-2²: Configurez le status via le fichier de configuration
+2: Renommez le fichier "config.copy.js" en "config.js" (config/config.copy.js)
 
-3: Si vous souhaitez modifier les coins donnés pour les commandes daily/Weekly, 
+3: Configurez les options de connexion dans le fichier config (/config/config.js)
+3²: Configurez le status via le fichier de configuration
+
+4: Si vous souhaitez modifier les coins donnés pour les commandes daily/Weekly, 
 rendez vous dans le fichier économie ligne 17(commands/slash/general/economie.js)
