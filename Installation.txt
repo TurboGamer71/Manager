@@ -14,4 +14,4 @@ rendez vous dans le fichier économie ligne 25(commands/slash/general/economie.j
 (index.php LIGNE 3)
 
 6: Importez le fichier "index.php" sur votre site. Ensuite, entre l'url pour y accéder dans le fichier economie
-(commands/slash/general/economie.js LIGNE 23)
+(commands/slash/general/economie.js LIGNE 87)

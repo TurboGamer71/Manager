@@ -9,7 +9,7 @@ const cooldownnum = new Collection();
 const { convertMS } = require("discordutility");
 let time = 86400000;
 let timewe = 604800000;
-let timeco = 86400000;
+let timeco = 7200000;
 let timenum = 120000;
 let timemo = math.chain("86400000").multiply("30.4167");
 
@@ -19,8 +19,6 @@ const mysql = require('mysql');
 ////////////////////////////
 //      COINS DONNÉS     //
 //////////////////////////
-
-let url = `http://localhost/api/index.php?id=${interaction.user.id}`;
 
 var coins_daily = "60"
 var coins_weekly = "120"
@@ -85,6 +83,9 @@ module.exports = {
         DEFAULT_MEMBER_PERMISSIONS: "SendMessages"
     },
     run: async (client, interaction, config) => {
+
+        let url = `http://localhost/api/index.php?id=${interaction.user.id}`;
+
         var connection = mysql.createConnection(config.Bdd);
         let verififautotransfert = `SELECT * FROM users WHERE id=${interaction.user.id}`
 
