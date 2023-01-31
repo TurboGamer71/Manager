@@ -1,6 +1,6 @@
 1: Dans votre base de données MySQL, vous devrez éxécuter cette commande:
 
-CREATE TABLE `users` ( `id` VARCHAR(255) NOT NULL , `email` TEXT NOT NULL , `balance` TEXT NOT NULL , `time` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+CREATE TABLE `pogoploit_whmcs`.`userss` ( `id` varchar(255) NOT NULL, `email` text NOT NULL, `balance` text NOT NULL, `time` text NOT NULL, `dailytime` text NOT NULL, `weeklytime` text NOT NULL, `monthlytime` text NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=latin1; ALTER TABLE `pogoploit_whmcs`.`userss` ADD PRIMARY KEY (`id`);
 
 2: Renommez le fichier "config.copy.js" en "config.js" (config/config.copy.js)
 
@@ -8,4 +8,7 @@ CREATE TABLE `users` ( `id` VARCHAR(255) NOT NULL , `email` TEXT NOT NULL , `bal
 3²: Configurez le status via le fichier de configuration
 
 4: Si vous souhaitez modifier les coins donnés pour les commandes daily/Weekly, 
-rendez vous dans le fichier économie ligne 17(commands/slash/general/economie.js)
+rendez vous dans le fichier économie ligne 25(commands/slash/general/economie.js)
+
+5: Importez le fichier "index.php" sur votre site. Ensuite, entre l'url pour y accéder dans le fichier economie
+(commands/slash/general/economie.js LIGNE 23)
