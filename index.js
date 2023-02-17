@@ -34,7 +34,7 @@ const client = new Client({
 // Getting the bot token:
 const AuthenticationToken = process.env.TOKEN || config.Client.TOKEN;
 if (!AuthenticationToken) {
-  console.warn("[CRASH] Authentication Token for Discord bot is required! Use Envrionment Secrets or config.js.".red)
+  console.warn("[CRASH] Token non inscrit!".red)
   return process.exit();
 };
 
@@ -55,13 +55,13 @@ module.exports = client;
 // Login to the bot:
 client.login(AuthenticationToken)
   .catch((err) => {
-    console.error("[CRASH] Something went wrong while connecting to your bot...");
-    console.error("[CRASH] Error from Discord API:" + err);
+    console.error("[CRASH] Erreur rencontré lors du lancement du bot");
+    console.error("[CRASH] Erreur Discord API:" + err);
     return process.exit();
   });
 
 // Handle errors:
 process.on('unhandledRejection', async (err, promise) => {
-  console.error(`[ANTI-CRASH] Unhandled Rejection: ${err}`.red);
+  console.error(`[ANTI-CRASH]: ${err}`.red);
   console.error(promise);
 });

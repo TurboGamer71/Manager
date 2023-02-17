@@ -11,9 +11,9 @@ module.exports = (client, config) => {
         let pull = require(`../modals/${file}`);
         if (pull.id) {
             client.modals.set(pull.id, pull);
-            console.log(`[HANDLER - MODALS] Loaded a file: ${file}`.brightGreen)
+            console.log(`[HANDLER - MODALS] Fichier chargé: ${file}`.brightGreen)
         } else {
-            console.log(`[HANDLER - MODALS] Couldn't load the file ${file}. Missing modal ID.`.red)
+            console.log(`[HANDLER - MODALS] Impossible de charger le fichier ${file}. ID du Modal non inscrit.`.red)
             continue;
         }
     }

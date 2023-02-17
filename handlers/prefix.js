@@ -11,9 +11,9 @@ module.exports = (client, config) => {
       let pull = require(`../commands/prefix/${dir}/${file}`);
       if (pull.config.name) {
         client.prefix_commands.set(pull.config.name, pull);
-        console.log(`[HANDLER - PREFIX] Loaded a file: ${pull.config.name} (#${client.prefix_commands.size})`.brightGreen)
+        console.log(`[HANDLER - PREFIX] Fichier chargé: ${pull.config.name} (#${client.prefix_commands.size})`.brightGreen)
       } else {
-        console.log(`[HANDLER - PREFIX] Couldn't load the file ${file}, missing module name value.`.red)
+        console.log(`[HANDLER - PREFIX] Impossible de charger le fichier ${file}, missing module name value.`.red)
         continue;
       };
 

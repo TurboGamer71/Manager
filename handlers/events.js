@@ -11,9 +11,9 @@ module.exports = (client) => {
 			let pull = require(`../events/${dir}/${file}`);
 			if (pull.name) {
 				client.events.set(pull.name, pull);
-				console.log(`[HANDLER - EVENTS] Loaded a file: ${pull.name}`.brightGreen)
+				console.log(`[HANDLER - EVENTS] Fichier chargé: ${pull.name}`.brightGreen)
 			} else {
-				console.log(`[HANDLER - EVENTS] Couldn't load the file ${file}. missing name or aliases.`.red)
+				console.log(`[HANDLER - EVENTS] Impossible de charger le fichier ${file}. Nom ou alias manquants.`.red)
 				continue;
 			}
       

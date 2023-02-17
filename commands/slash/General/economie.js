@@ -100,7 +100,8 @@ module.exports = {
                 let gettime = `SELECT * FROM users WHERE id=${interaction.user.id}`
                 
                 connection.query(gettime, function (error, results, fields) {
-                        const timeLeft = AAAAAAbb.dailytime - Date.now(); 
+                        const lefttime = AAAAAAbb.dailytime + time; 
+                        const timeLeft = lefttime - Date.now(); 
                         const converted = convertMS(timeLeft); // Changes the ms to time
                     if(error){
                         return interaction.reply({
@@ -142,7 +143,8 @@ module.exports = {
                     
                         if(json.weekly == "false") { // if user on cooldown
                             
-                            const timeLeft = AAAAAAbb.weeklytime - Date.now(); 
+                            const timeLLeft = AAAAAAbb.weeklytime + timewe; 
+                            const timeLeft = timeLLeft - Date.now(); 
                             const converted = convertMS(timeLeft); // Changes the ms to time
                             //add message here if code
                             interaction.reply({
@@ -167,7 +169,8 @@ module.exports = {
                     
                         if(json.monthly == "false") { // if user on cooldown
                             
-                            const timeLeft = AAAAAAbb.monthlytime - Date.now(); 
+                            const timeeLeft = AAAAAAbb.monthlytime + timemo; 
+                            const timeLeft = timeeLeft - Date.now(); 
                             const converted = convertMS(timeLeft); // Changes the ms to time
                             //add message here if code
                             interaction.reply({
@@ -393,7 +396,7 @@ module.exports = {
         })
 
         function givecredits(endroit, nombre, type, cooldown){
-            var Now = Date.now() + cooldown
+            var Now = Date.now()
             if(endroit == "discord"){
                 var getcredits = `SELECT * FROM users WHERE id='${interaction.user.id}'`
                 connection.query(getcredits, function (error, results, fields) {

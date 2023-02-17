@@ -20,7 +20,7 @@ module.exports = {
   },
 
   Divers: {
-    activité: "Her-Network",
+    activité: "Système d'économie WHMCS",
     version: "1.0",
   }
 }
