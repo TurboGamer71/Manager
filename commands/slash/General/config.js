@@ -40,24 +40,45 @@ module.exports = {
             Sélectionne l'une des propositions ci-dessous pour configurer celle-ci!
             `
          )
-        var Verifsiilestconnecté = `SELECT * FROM users WHERE id="${interaction.user.id}"`
 
-        connection.query(Verifsiilestconnecté, function(error, results, fields) {
-            var résultats = results.length
-
-                if(résultats == 0){
-                    return interaction.reply({
-                        embeds: [
-                          new EmbedBuilder()
-                            .setDescription(':x: | Vous n\'êtes pas connecté!')
-                            .setColor('Red')
-                        ],
-                        ephemeral: false,
-                        components: [],
-                    });
-                }else{
-                    interaction.reply({ embeds: [embeddrop], components: [colors], ephemeral: true, });
-                }
-        })
+        if(config.Type == "1"){
+            var Verifsiilestconnecté = `SELECT * FROM users WHERE id="${interaction.user.id}"`
+            connection.query(Verifsiilestconnecté, function(error, results, fields) {
+                var résultats = results.length
+                    if(résultats == 0){
+                        return interaction.reply({
+                            embeds: [
+                            new EmbedBuilder()
+                                .setDescription(':x: | Vous n\'êtes pas connecté!')
+                                .setColor('Red')
+                            ],
+                            ephemeral: false,
+                            components: [],
+                        });
+                    }else{
+                        interaction.reply({ embeds: [embeddrop], components: [colors], ephemeral: true, });
+                    }
+            })
+        }else{
+            if(config.Type == "2"){
+                var Verifsiilestconnecté = `SELECT * FROM botusers WHERE id="${interaction.user.id}"`
+                connection.query(Verifsiilestconnecté, function(error, results, fields) {
+                    var résultats = results.length
+                        if(résultats == 0){
+                            return interaction.reply({
+                                embeds: [
+                                new EmbedBuilder()
+                                    .setDescription(':x: | Vous n\'êtes pas connecté!')
+                                    .setColor('Red')
+                                ],
+                                ephemeral: false,
+                                components: [],
+                            });
+                        }else{
+                            interaction.reply({ embeds: [embeddrop], components: [colors], ephemeral: true, });
+                        }
+                })
+            }
+        }
     },
 };

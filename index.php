@@ -5,33 +5,61 @@ try {
     die('Une erreur à été rencontrée lors de la connection avec la base de données: '. $e->getMessage());
 }
 
-if(empty($_GET['id'])){
+if(empty($_GET['id'] || empty($_GET['conf']))){
     echo '{"status": "failed"}';
     return;
 }else{
     $id = $_GET['id'];
+    $Mode = $_GET['conf'];
 }
+if($Mode == "1"){
+    $check = $bdd->prepare('SELECT * FROM users WHERE id=?');
+    $check->execute(array($id));
+    $checked = $check->fetch();
 
-$check = $bdd->prepare('SELECT * FROM users WHERE id=?');
-$check->execute(array($id));
-$checked = $check->fetch();
+    if ($checked['dailytime'] <= strtotime('-1 day')) {
+        $daily = "\"daily\":\"true\"";
+    } else {
+        $daily = "\"daily\":\"false\"";
+    }
 
-if ($checked['dailytime'] <= strtotime('-1 day')) {
-    $daily = "\"daily\":\"true\"";
-} else {
-    $daily = "\"daily\":\"false\"";
+    if ($checked['weeklytime'] <= strtotime('-1 week')) {
+        $weekly = "\"weekly\":\"true\"";
+    } else {
+        $weekly = "\"weekly\":\"false\"";
+    }
+
+    if ($checked['monthlytime'] <= strtotime('-1 month')) {
+        $monthly = "\"monthly\":\"true\"";
+    } else {
+        $monthly = "\"monthly\":\"false\"";
+    }
+
+    echo '{'.$daily.','.$weekly.','.$monthly.',"status":"success"'.'}';
+}else{
+    if($Mode == "2"){
+        $check = $bdd->prepare('SELECT * FROM botusers WHERE id=?');
+        $check->execute(array($id));
+        $checked = $check->fetch();
+    
+        if ($checked['dailytime'] <= strtotime('-1 day')) {
+            $daily = "\"daily\":\"true\"";
+        } else {
+            $daily = "\"daily\":\"false\"";
+        }
+    
+        if ($checked['weeklytime'] <= strtotime('-1 week')) {
+            $weekly = "\"weekly\":\"true\"";
+        } else {
+            $weekly = "\"weekly\":\"false\"";
+        }
+    
+        if ($checked['monthlytime'] <= strtotime('-1 month')) {
+            $monthly = "\"monthly\":\"true\"";
+        } else {
+            $monthly = "\"monthly\":\"false\"";
+        }
+    
+        echo '{'.$daily.','.$weekly.','.$monthly.',"status":"success"'.'}';
+    } 
 }
-
-if ($checked['weeklytime'] <= strtotime('-1 week')) {
-    $weekly = "\"weekly\":\"true\"";
-} else {
-    $weekly = "\"weekly\":\"false\"";
-}
-
-if ($checked['monthlytime'] <= strtotime('-1 month')) {
-    $monthly = "\"monthly\":\"true\"";
-} else {
-    $monthly = "\"monthly\":\"false\"";
-}
-
-echo '{'.$daily.','.$weekly.','.$monthly.',"status":"success"'.'}';

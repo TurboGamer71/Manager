@@ -82,67 +82,132 @@ client.on('interactionCreate', async (interaction) => {
       });
     }
     function win(){
-      var connection = mysql.createConnection(config.Bdd);
-     
-      let verififautotransfert = `SELECT * FROM users WHERE id=${interaction.user.id}`
-        connection.query(verififautotransfert, function (error, results, fields) {
-          var autotransfert = results[0].autotransfert
-          var add = entierAleatoire(10, 100)
-          if(autotransfert == "off"){
-            givecredits("discord", add)
-          }else{
-              givecredits("manager", add)
-          }
+      if(config.Type == "1"){
+        var connection = mysql.createConnection(config.Bdd);
+      
+        let verififautotransfert = `SELECT * FROM users WHERE id=${interaction.user.id}`
+          connection.query(verififautotransfert, function (error, results, fields) {
+            var autotransfert = results[0].autotransfert
+            var add = entierAleatoire(10, 100)
+            if(autotransfert == "off"){
+              givecredits("discord", add)
+            }else{
+                givecredits("manager", add)
+            }
 
-          function givecredits(endroit, nombre){
-            if(endroit == "discord"){
-                var getcredits = `SELECT * FROM users WHERE id='${interaction.user.id}'`
-                connection.query(getcredits, function (error, results, fields) {
-                    var creditsActuels = results[0].balance
-                    var Newcredits = math.chain(creditsActuels)
-                                        .add(nombre)
-                        var setCredits = `UPDATE users SET balance='${Newcredits}' WHERE id='${interaction.user.id}'`       
-                        connection.query(setCredits, function (error, results, fields) {
-                            return interaction.update({
-                                content: `<@${interaction.user.id}>`,
-                                embeds:[
-                                    new EmbedBuilder()
-                                        .setDescription(`:white_check_mark: | Vous venez de gagner ${nombre} (discord)`)
-                                        .setColor('Green')
-                                ],
-                                ephemeral: false,
-                                components: [],
-                            })
-                        })      
-                })
-            }else if(endroit == "manager"){
-                    var getcredits = `SELECT * FROM users WHERE id='${interaction.user.id}'`
-                    connection.query(getcredits, function (error, result, fields) {
-                        var actualmail = result[0].email
-                        var getcredits = `SELECT * FROM tblclients WHERE email='${actualmail}'`
-                        connection.query(getcredits, function (error, results, fields) {
-                        var creditsActuels = results[0].credit
+            function givecredits(endroit, nombre){
+              if(endroit == "discord"){
+                  var getcredits = `SELECT * FROM users WHERE id='${interaction.user.id}'`
+                  connection.query(getcredits, function (error, results, fields) {
+                      var creditsActuels = results[0].balance
+                      var Newcredits = math.chain(creditsActuels)
+                                          .add(nombre)
+                          var setCredits = `UPDATE users SET balance='${Newcredits}' WHERE id='${interaction.user.id}'`       
+                          connection.query(setCredits, function (error, results, fields) {
+                              return interaction.update({
+                                  content: `<@${interaction.user.id}>`,
+                                  embeds:[
+                                      new EmbedBuilder()
+                                          .setDescription(`:white_check_mark: | Vous venez de gagner ${nombre} (discord)`)
+                                          .setColor('Green')
+                                  ],
+                                  ephemeral: false,
+                                  components: [],
+                              })
+                          })      
+                  })
+              }else if(endroit == "manager"){
+                      var getcredits = `SELECT * FROM users WHERE id='${interaction.user.id}'`
+                      connection.query(getcredits, function (error, result, fields) {
+                          var actualmail = result[0].email
+                          var getcredits = `SELECT * FROM tblclients WHERE email='${actualmail}'`
+                          connection.query(getcredits, function (error, results, fields) {
+                          var creditsActuels = results[0].credit
+                          var Newcredits = math.chain(creditsActuels)
+                                              .add(nombre)
+                              var setCredits = `UPDATE tblclients SET credit='${Newcredits}' WHERE email='${actualmail}'`       
+                              connection.query(setCredits, function (error, results, fields) {
+                                  return interaction.update({
+                                      content: `<@${interaction.user.id}>`,
+                                      embeds:[
+                                          new EmbedBuilder()
+                                              .setDescription(`:white_check_mark: | Vous venez de gagner ${nombre} (manager)`)
+                                              .setColor('Green')
+                                      ],
+                                      ephemeral: false,
+                                      components: [],
+                                  })
+                              })   
+                          })
+                      })
+              }
+          }
+        })
+      }else{
+        if(config.Type == "2"){
+          var connection = mysql.createConnection(config.Bdd);
+        
+          let verififautotransfert = `SELECT * FROM botusers WHERE id=${interaction.user.id}`
+            connection.query(verififautotransfert, function (error, results, fields) {
+              var autotransfert = results[0].autotransfert
+              var add = entierAleatoire(10, 100)
+              if(autotransfert == "off"){
+                givecredits("discord", add)
+              }else{
+                  givecredits("manager", add)
+              }
+  
+              function givecredits(endroit, nombre){
+                if(endroit == "discord"){
+                    var getcredits = `SELECT * FROM botusers WHERE id='${interaction.user.id}'`
+                    connection.query(getcredits, function (error, results, fields) {
+                        var creditsActuels = results[0].balance
                         var Newcredits = math.chain(creditsActuels)
                                             .add(nombre)
-                            var setCredits = `UPDATE tblclients SET credit='${Newcredits}' WHERE email='${actualmail}'`       
+                            var setCredits = `UPDATE botusers SET balance='${Newcredits}' WHERE id='${interaction.user.id}'`       
                             connection.query(setCredits, function (error, results, fields) {
                                 return interaction.update({
                                     content: `<@${interaction.user.id}>`,
                                     embeds:[
                                         new EmbedBuilder()
-                                            .setDescription(`:white_check_mark: | Vous venez de gagner ${nombre} (manager)`)
+                                            .setDescription(`:white_check_mark: | Vous venez de gagner ${nombre} (discord)`)
                                             .setColor('Green')
                                     ],
                                     ephemeral: false,
                                     components: [],
                                 })
-                            })   
-                        })
+                            })      
                     })
+                }else if(endroit == "manager"){
+                        var getcredits = `SELECT * FROM botusers WHERE id='${interaction.user.id}'`
+                        connection.query(getcredits, function (error, result, fields) {
+                            var actualmail = result[0].email
+                            var getcredits = `SELECT * FROM users WHERE email='${actualmail}'`
+                            connection.query(getcredits, function (error, results, fields) {
+                            var creditsActuels = results[0].credit
+                            var Newcredits = math.chain(creditsActuels)
+                                                .add(nombre)
+                                var setCredits = `UPDATE users SET money='${Newcredits}' WHERE email='${actualmail}'`       
+                                connection.query(setCredits, function (error, results, fields) {
+                                    return interaction.update({
+                                        content: `<@${interaction.user.id}>`,
+                                        embeds:[
+                                            new EmbedBuilder()
+                                                .setDescription(`:white_check_mark: | Vous venez de gagner ${nombre} (manager)`)
+                                                .setColor('Green')
+                                        ],
+                                        ephemeral: false,
+                                        components: [],
+                                    })
+                                })   
+                            })
+                        })
+                }
             }
+          })
         }
-        })
-    }
+      }
+    } // aa
     var colornb = entierAleatoire(1, 4);
     if(interaction.customId == "yellow" && colornb == "1"){
       win()
@@ -194,23 +259,45 @@ client.on('interactionCreate', async (interaction) => {
           );
           
     if(sélectionné == "autotransfert"){
-      let verififitsenabled = `SELECT * FROM users WHERE id=${interaction.user.id}`
-        
-      connection.query(verififitsenabled, function (error, results, fields) {
-        var ifenabled = results[0].autotransfert
+      if(config.Type == "1"){
+        let verififitsenabled = `SELECT * FROM users WHERE id=${interaction.user.id}`
+          
+        connection.query(verififitsenabled, function (error, results, fields) {
+          var ifenabled = results[0].autotransfert
 
-        if(ifenabled == "off"){
-          interaction.update({
-            embeds: [autotransfert],
-            components: [activerow],
-          })
-        }else{
-          interaction.update({
-            embeds: [autotransfert],
-            components: [desarow],
+          if(ifenabled == "off"){
+            interaction.update({
+              embeds: [autotransfert],
+              components: [activerow],
+            })
+          }else{
+            interaction.update({
+              embeds: [autotransfert],
+              components: [desarow],
+            })
+          }
+        })
+      }else{
+        if(config.Type == "2"){
+          let verififitsenabled = `SELECT * FROM botusers WHERE id=${interaction.user.id}`
+            
+          connection.query(verififitsenabled, function (error, results, fields) {
+            var ifenabled = results[0].autotransfert
+  
+            if(ifenabled == "off"){
+              interaction.update({
+                embeds: [autotransfert],
+                components: [activerow],
+              })
+            }else{
+              interaction.update({
+                embeds: [autotransfert],
+                components: [desarow],
+              })
+            }
           })
         }
-      })
+      }
     }
   }
 
@@ -236,7 +323,7 @@ client.on('interactionCreate', async (interaction) => {
     const embeddrop = new EmbedBuilder()
       .setTitle(`Configurations des préférences`)
       .setDescription(
-        `Salut :wave:! Moi, c'est le bot d'Her Network. Je suis en version **${config.Divers.version}**
+        `Salut :wave:! Moi, c'est le bot d'économie. Je suis en version **${config.Divers.version}**
         
 
         Sélectionne l'une des propositions ci-dessous pour configurer celle-ci!
@@ -248,7 +335,8 @@ client.on('interactionCreate', async (interaction) => {
   }
 
   if(interaction.customId == "disableautotransfert"){
-    let verififitsenabled = `UPDATE users SET autotransfert='off' WHERE id=${interaction.user.id}`
+    if(config.Type == "1"){
+      let verififitsenabled = `UPDATE users SET autotransfert='off' WHERE id=${interaction.user.id}`
       connection.query(verififitsenabled, function (error, results, fields) {
         const embeddisabletransfert = new EmbedBuilder()
         .setTitle(`Configurations des préférences`)
@@ -259,10 +347,26 @@ client.on('interactionCreate', async (interaction) => {
 
         interaction.update({ embeds:[embeddisabletransfert], components: [], ephemeral: true})
       })
+    }else{
+      if(config.Type == "2"){
+        let verififitsenabled = `UPDATE botusers SET autotransfert='off' WHERE id=${interaction.user.id}`
+        connection.query(verififitsenabled, function (error, results, fields) {
+          const embeddisabletransfert = new EmbedBuilder()
+          .setTitle(`Configurations des préférences`)
+          .setDescription(
+            `:white_check_mark: | Le transfert automatique a correctement été désactivé!
+            `
+         )
+  
+          interaction.update({ embeds:[embeddisabletransfert], components: [], ephemeral: true})
+        })
+      }
+    }
   }
 
   if(interaction.customId == "activeautotransfert"){
-    let verififitsenabled = `UPDATE users SET autotransfert='on' WHERE id=${interaction.user.id}`
+    if(config.Type == "1"){
+      let verififitsenabled = `UPDATE users SET autotransfert='on' WHERE id=${interaction.user.id}`
       connection.query(verififitsenabled, function (error, results, fields) {
         const embeddisabletransfert = new EmbedBuilder()
         .setTitle(`Configurations des préférences`)
@@ -273,6 +377,21 @@ client.on('interactionCreate', async (interaction) => {
 
         interaction.update({ embeds:[embeddisabletransfert], components: [], ephemeral: true})
       })
+    }else{
+      if(config.Type == "2"){
+        let verififitsenabled = `UPDATE botusers SET autotransfert='on' WHERE id=${interaction.user.id}`
+        connection.query(verififitsenabled, function (error, results, fields) {
+          const embeddisabletransfert = new EmbedBuilder()
+          .setTitle(`Configurations des préférences`)
+          .setDescription(
+            `:white_check_mark: | Le transfert automatique a correctement été activé!
+            `
+         )
+  
+          interaction.update({ embeds:[embeddisabletransfert], components: [], ephemeral: true})
+        })
+      }
+    }
   }
 
 });
