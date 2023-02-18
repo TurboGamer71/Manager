@@ -2,6 +2,7 @@
 
 2: Configurez les options de connexion pour la DB dans le fichier config (/config/config.js)
 2²: Configurez le status via le fichier de configuration
+2²: Configurez le CMS (Ligne 3: Type)
 
 3: Si vous souhaitez modifier les coins donnés pour les commandes daily/Weekly, 
 rendez vous dans le fichier économie ligne 25(commands/slash/general/economie.js)
