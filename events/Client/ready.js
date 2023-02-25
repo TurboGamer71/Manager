@@ -2,7 +2,19 @@ const client = require("../../index");
 const colors = require("colors");
 const config = require('../../config/config.js')
 const mysql = require('mysql');
+const fetch = require('node-fetch');
+const https = require('https');
+const httpsAgent = new https.Agent({
+      rejectUnauthorized: false,
+    });
 var connection = mysql.createConnection(config.Bdd);
+
+
+
+let url = `https://localhost/api/index.php?id=${interaction.user.id}&conf=${config.Type}`;
+
+
+
 try {
   if(config.Type == "1"){
     TestConnexion = "SELECT * FROM tbladdons"
@@ -24,9 +36,7 @@ try {
     }
   }
 
-}catch{
-
-}
+}catch{}
 
 module.exports = {
   name: "ready.js"
@@ -85,4 +95,35 @@ client.once('ready', async () => {
       })
     }
   }
+
+  setInterval(Remind, 60000); 
+
+  function Remind(){
+    const GuildList = client.guilds.get(config.ServeurID); 
+    GuildList.members.forEach(member => SendRemind(member.id)); 
+  };
+
+  function SendRemind(userID){
+    if(config.Type == "1"){
+      VerifSiCo = `SELECT * FROM users WHERE id = ${userID}`
+      connection.query(VerifSiCo, function (error, results, fields) {
+        if(results.length == 0){ return; }else{
+          let settings = { method: "Get", agent: httpsAgent, };        
+          fetch(url, settings)
+          .then(res => res.json())
+          .then((json) => {
+            
+          })
+        }
+      })
+    }else{
+      if(config.Type == "2"){
+        VerifSiCo = `SELECT * FROM botusers WHERE id = ${userID}`
+        connection.query(VerifSiCo, function (error, results, fields) {
+  
+        })
+      }
+    }
+  }
+  
 })

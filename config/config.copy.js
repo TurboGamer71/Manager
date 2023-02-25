@@ -2,6 +2,8 @@ module.exports = {
 
   Type: "", // 1 = WHMCS / 2 = Azuriom
 
+  ServeurID: "", // l'ID DU SERVEUR
+
   Prefix: "?", // INUTILISÉ
 
   Users: {

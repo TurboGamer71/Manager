@@ -7,7 +7,7 @@ module.exports = {
   },
   permissions: ['SendMessages'],
   owner: false,
-  run: async (client, message, args, prefix, config, db) => {
+  run: async (client, message, args, prefix, config) => {
 
     message.reply({ embeds: [
       new EmbedBuilder()
