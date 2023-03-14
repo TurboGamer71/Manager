@@ -6,6 +6,8 @@ module.exports = {
 
   Prefix: "?", // INUTILISÉ
 
+  Url: "https://localhost/api/index.php", // URL POUR ATTEINDRE LE FICHIER PHP
+
   Users: {
     OWNERS: ["aa"] // INUTILISÉ
   },
@@ -25,6 +27,6 @@ module.exports = {
 
   Divers: {
     activité: "Système d'économie WHMCS",
-    version: "1.0",
+    version: "1.8 - Dernière Maj",
   }
 }

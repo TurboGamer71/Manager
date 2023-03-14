@@ -34,7 +34,7 @@ module.exports = {
         const embeddrop = new EmbedBuilder()
 		 .setTitle(`Configurations des préférences`)
          .setDescription(
-            `Salut :wave:! Moi, c'est le bot d'Her Network. Je suis en version **${config.Divers.version}**
+            `Salut :wave:! Moi, c'est le bot d'économie. Je suis en version **${config.Divers.version}**
             
 
             Sélectionne l'une des propositions ci-dessous pour configurer celle-ci!

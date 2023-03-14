@@ -394,5 +394,82 @@ client.on('interactionCreate', async (interaction) => {
     }
   }
 
+  if(interaction.customId == "SelectAdminConfig"){
+    const sélectionné = interaction.values[0];
+
+    if(sélectionné == "multiplesconnexions"){
+      const activerow = new ActionRowBuilder()
+			  .addComponents(
+          new ButtonBuilder()
+            .setCustomId('activemultiplesconnexions')
+            .setLabel('Interdir')
+            .setStyle(ButtonStyle.Success),
+          new ButtonBuilder()
+            .setCustomId('back')
+            .setLabel('Retour')
+            .setStyle(ButtonStyle.Secondary),
+          );
+      const desarow = new ActionRowBuilder()
+			  .addComponents(
+          new ButtonBuilder()
+            .setCustomId('disablemultiplesconnexions')
+            .setLabel('Accepter')
+            .setStyle(ButtonStyle.Danger),
+          new ButtonBuilder()
+            .setCustomId('back')
+            .setLabel('Retour')
+            .setStyle(ButtonStyle.Secondary),
+        );
+      var VerifSiMultipleConnexionsIsEnabled = `SELECT * FROM botadminconfig`
+      connection.query(VerifSiMultipleConnexionsIsEnabled, function (error, results, fields) {
+        var multiplesconnexions = results[0].multiplesconnexions
+
+        if(multiplesconnexions == "yes"){
+            interaction.update({
+              embeds: [
+              new EmbedBuilder()
+                  .setDescription('Acceptez/Désactivez le fait que plusieurs personnez peuvent être connectés sur le même compte')
+              ],
+              ephemeral: true,
+              components: [activerow],
+          })
+        }else{
+          interaction.update({
+            embeds: [
+            new EmbedBuilder()
+                .setDescription('Acceptez/Désactivez le fait que plusieurs personnez peuvent être connectés sur le même compte')
+            ],
+            ephemeral: true,
+            components: [desarow],
+        })
+        }
+      })
+    }
+  }
+
+  if(interaction.customId == "activemultiplesconnexions"){
+
+    const embeddrop = new EmbedBuilder()
+    .setTitle(`Configurations des préférences`)
+    .setDescription(`:white_check_mark: | Les paramètres ont bien été sauvegardés!`)
+    .setColor('Green')
+
+    var Interdir = "UPDATE botadminconfig SET multiplesconnexions='no' WHERE multiplesconnexions='yes'"
+    connection.query(Interdir, function (error, results, fields) {
+      interaction.update({embeds: [embeddrop], components: []})
+    })
+  }
+  if(interaction.customId == "disablemultiplesconnexions"){
+
+    const embeddrop = new EmbedBuilder()
+    .setTitle(`Configurations des préférences`)
+    .setDescription(`:white_check_mark: | Les paramètres ont bien été sauvegardés!`)
+    .setColor('Green')
+
+    var Interdir = "UPDATE botadminconfig SET multiplesconnexions='yes' WHERE multiplesconnexions='no'"
+    connection.query(Interdir, function (error, results, fields) {
+      interaction.update({embeds: [embeddrop], components: []})
+    })
+  }
 });
 

@@ -55,82 +55,99 @@ module.exports = {
                         ephemeral: false,
                     })
                 }else{
-                    // Vérifier si le compte discord est dans la bdd
-                    var verififexist = `SELECT * FROM users WHERE id = "${interaction.user.id}"`
-
-                    connection.query(verififexist, function(error, results, fields) {
-                        // Erreur
-                        if(error){
-                            console.log(error)
-                            return interaction.reply({
-                                content: `<@${interaction.user.id}>`,
-                                embeds:[
-                                    new EmbedBuilder()
-                                        .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
-                                        .setColor('Red')
-                                ],
-                                ephemeral: false,
-                            })
-                        }
-                        // Verif si existe
-                        if(results.length == 0){
-                            // Existe pas
-                            var importuser = `INSERT INTO users(id, email, balance, autotransfert) VALUES ("${interaction.user.id}", "${interaction.options.get('email').value}", "0", "off")`
-                            connection.query(importuser, function(error, results, fields) {
-                                // Erreur
-                                if(error){
-                                    console.log(error)
+                    var verifmultiplesconnexions = `SELECT * FROM botadminconfig`
+                    connection.query(verifmultiplesconnexions, function(error, result, fields) {
+                        var verifmultiplesconnexions = `SELECT * FROM users WHERE email = "${interaction.options.get('email').value}"`
+                        connection.query(verifmultiplesconnexions, function(error, resultssss, fields) {
+                            // Vérifier si le compte discord est dans la bdd
+                            var verififexist = `SELECT * FROM users WHERE id = "${interaction.user.id}"`
+                            connection.query(verififexist, function(error, results, fields) {
+                                if(resultssss.length > 0 && result[0].multiplesconnexions == "no"){
                                     return interaction.reply({
                                         content: `<@${interaction.user.id}>`,
                                         embeds:[
                                             new EmbedBuilder()
-                                                .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
+                                                .setDescription(`:x: | Les connexions multiples sont désactivées!`)
                                                 .setColor('Red')
                                         ],
                                         ephemeral: false,
                                     })
                                 }else{
-                                    return interaction.reply({
-                                        content: `<@${interaction.user.id}>`,
-                                        embeds:[
-                                            new EmbedBuilder()
-                                                .setDescription(`:white_check_mark: | Compte connecté!`)
-                                                .setColor('Green')
-                                        ],
-                                        ephemeral: false,
-                                    })
-                                }
-                            })
-                        }else{
-                            //existe
-                            var updateuser = `UPDATE users SET email="${interaction.options.get('email').value}" WHERE id="${interaction.user.id}"`
+                                    // Erreur
+                                    if(error){
+                                        console.log(error)
+                                        return interaction.reply({
+                                            content: `<@${interaction.user.id}>`,
+                                            embeds:[
+                                                new EmbedBuilder()
+                                                    .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
+                                                    .setColor('Red')
+                                            ],
+                                            ephemeral: false,
+                                        })
+                                    }
+                                    // Verif si existe
+                                    if(results.length == 0){
+                                        // Existe pas
+                                        var importuser = `INSERT INTO users(id, email, balance, autotransfert) VALUES ("${interaction.user.id}", "${interaction.options.get('email').value}", "0", "off")`
+                                        connection.query(importuser, function(error, results, fields) {
+                                            // Erreur
+                                            if(error){
+                                                console.log(error)
+                                                return interaction.reply({
+                                                    content: `<@${interaction.user.id}>`,
+                                                    embeds:[
+                                                        new EmbedBuilder()
+                                                            .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
+                                                            .setColor('Red')
+                                                    ],
+                                                    ephemeral: false,
+                                                })
+                                            }else{
+                                                return interaction.reply({
+                                                    content: `<@${interaction.user.id}>`,
+                                                    embeds:[
+                                                        new EmbedBuilder()
+                                                            .setDescription(`:white_check_mark: | Compte connecté!`)
+                                                            .setColor('Green')
+                                                    ],
+                                                    ephemeral: false,
+                                                })
+                                            }
+                                        })
+                                    }else{
+                                        //existe
+                                        var updateuser = `UPDATE users SET email="${interaction.options.get('email').value}" WHERE id="${interaction.user.id}"`
 
-                            connection.query(updateuser, function(error, results, fields) {
-                                // Erreur
-                                if(error){
-                                    console.log(error)
-                                    return interaction.reply({
-                                        content: `<@${interaction.user.id}>`,
-                                        embeds:[
-                                            new EmbedBuilder()
-                                                .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
-                                                .setColor('Red')
-                                        ],
-                                        ephemeral: false,
-                                    })
-                                }else{
-                                    return interaction.reply({
-                                        content: `<@${interaction.user.id}>`,
-                                        embeds:[
-                                            new EmbedBuilder()
-                                                .setDescription(`:white_check_mark: | Compte connecté!`)
-                                                .setColor('Green')
-                                        ],
-                                        ephemeral: false,
-                                    })
+                                        connection.query(updateuser, function(error, results, fields) {
+                                            // Erreur
+                                            if(error){
+                                                console.log(error)
+                                                return interaction.reply({
+                                                    content: `<@${interaction.user.id}>`,
+                                                    embeds:[
+                                                        new EmbedBuilder()
+                                                            .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
+                                                            .setColor('Red')
+                                                    ],
+                                                    ephemeral: false,
+                                                })
+                                            }else{
+                                                return interaction.reply({
+                                                    content: `<@${interaction.user.id}>`,
+                                                    embeds:[
+                                                        new EmbedBuilder()
+                                                            .setDescription(`:white_check_mark: | Compte connecté!`)
+                                                            .setColor('Green')
+                                                    ],
+                                                    ephemeral: false,
+                                                })
+                                            }
+                                        })
+                                    }
                                 }
                             })
-                        }
+                        })
                     })
                 }
             })
@@ -163,28 +180,24 @@ module.exports = {
                             ephemeral: false,
                         })
                     }else{
-                        // Vérifier si le compte discord est dans la bdd
-                        var verififexist = `SELECT * FROM botusers WHERE id = "${interaction.user.id}"`
-
-                        connection.query(verififexist, function(error, results, fields) {
-                            // Erreur
-                            if(error){
-                                console.log(error)
-                                return interaction.reply({
-                                    content: `<@${interaction.user.id}>`,
-                                    embeds:[
-                                        new EmbedBuilder()
-                                            .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
-                                            .setColor('Red')
-                                    ],
-                                    ephemeral: false,
-                                })
-                            }
-                            // Verif si existe
-                            if(results.length == 0){
-                                // Existe pas
-                                var importuser = `INSERT INTO botusers(id, email, balance, autotransfert) VALUES ("${interaction.user.id}", "${interaction.options.get('email').value}", "0", "off")`
-                                connection.query(importuser, function(error, results, fields) {
+                        var verifmultiplesconnexions = `SELECT * FROM botadminconfig`
+                    connection.query(verifmultiplesconnexions, function(error, result, fields) {
+                        var verifmultiplesconnexions = `SELECT * FROM users WHERE email = "${interaction.options.get('email').value}"`
+                        connection.query(verifmultiplesconnexions, function(error, resultssss, fields) {
+                            // Vérifier si le compte discord est dans la bdd
+                            var verififexist = `SELECT * FROM users WHERE id = "${interaction.user.id}"`
+                            connection.query(verififexist, function(error, results, fields) {
+                                if(resultssss.length > 0 && result[0].multiplesconnexions == "no"){
+                                    return interaction.reply({
+                                        content: `<@${interaction.user.id}>`,
+                                        embeds:[
+                                            new EmbedBuilder()
+                                                .setDescription(`:x: | Les connexions multiples sont désactivées!`)
+                                                .setColor('Red')
+                                        ],
+                                        ephemeral: false,
+                                    })
+                                }else{
                                     // Erreur
                                     if(error){
                                         console.log(error)
@@ -197,52 +210,73 @@ module.exports = {
                                             ],
                                             ephemeral: false,
                                         })
-                                    }else{
-                                        return interaction.reply({
-                                            content: `<@${interaction.user.id}>`,
-                                            embeds:[
-                                                new EmbedBuilder()
-                                                    .setDescription(`:white_check_mark: | Compte connecté!`)
-                                                    .setColor('Green')
-                                            ],
-                                            ephemeral: false,
-                                        })
                                     }
-                                })
-                            }else{
-                                //existe
-                                var updateuser = `UPDATE botusers SET email="${interaction.options.get('email').value}" WHERE id="${interaction.user.id}"`
+                                    // Verif si existe
+                                    if(results.length == 0){
+                                        // Existe pas
+                                        var importuser = `INSERT INTO botusers(id, email, balance, autotransfert) VALUES ("${interaction.user.id}", "${interaction.options.get('email').value}", "0", "off")`
+                                        connection.query(importuser, function(error, results, fields) {
+                                            // Erreur
+                                            if(error){
+                                                console.log(error)
+                                                return interaction.reply({
+                                                    content: `<@${interaction.user.id}>`,
+                                                    embeds:[
+                                                        new EmbedBuilder()
+                                                            .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
+                                                            .setColor('Red')
+                                                    ],
+                                                    ephemeral: false,
+                                                })
+                                            }else{
+                                                return interaction.reply({
+                                                    content: `<@${interaction.user.id}>`,
+                                                    embeds:[
+                                                        new EmbedBuilder()
+                                                            .setDescription(`:white_check_mark: | Compte connecté!`)
+                                                            .setColor('Green')
+                                                    ],
+                                                    ephemeral: false,
+                                                })
+                                            }
+                                        })
+                                    }else{
+                                        //existe
+                                        var updateuser = `UPDATE botusers SET email="${interaction.options.get('email').value}" WHERE id="${interaction.user.id}"`
 
-                                connection.query(updateuser, function(error, results, fields) {
-                                    // Erreur
-                                    if(error){
-                                        console.log(error)
-                                        return interaction.reply({
-                                            content: `<@${interaction.user.id}>`,
-                                            embeds:[
-                                                new EmbedBuilder()
-                                                    .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
-                                                    .setColor('Red')
-                                            ],
-                                            ephemeral: false,
-                                        })
-                                    }else{
-                                        return interaction.reply({
-                                            content: `<@${interaction.user.id}>`,
-                                            embeds:[
-                                                new EmbedBuilder()
-                                                    .setDescription(`:white_check_mark: | Compte connecté!`)
-                                                    .setColor('Green')
-                                            ],
-                                            ephemeral: false,
+                                        connection.query(updateuser, function(error, results, fields) {
+                                            // Erreur
+                                            if(error){
+                                                console.log(error)
+                                                return interaction.reply({
+                                                    content: `<@${interaction.user.id}>`,
+                                                    embeds:[
+                                                        new EmbedBuilder()
+                                                            .setDescription(`:x: | Une erreur à été rencontrée lors de la connexion avec la base de données.`)
+                                                            .setColor('Red')
+                                                    ],
+                                                    ephemeral: false,
+                                                })
+                                            }else{
+                                                return interaction.reply({
+                                                    content: `<@${interaction.user.id}>`,
+                                                    embeds:[
+                                                        new EmbedBuilder()
+                                                            .setDescription(`:white_check_mark: | Compte connecté!`)
+                                                            .setColor('Green')
+                                                    ],
+                                                    ephemeral: false,
+                                                })
+                                            }
                                         })
                                     }
-                                })
-                            }
+                                }
+                            })
                         })
-                    }
-                })
-            }
+                    })
+                }
+            })
         }
+    }
     },
 };

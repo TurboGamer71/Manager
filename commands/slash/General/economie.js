@@ -1,4 +1,4 @@
-const { EmbedBuilder, Collection, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events } = require("discord.js");
+const { EmbedBuilder, Collection, ActionRowBuilder, ButtonBuilder, ButtonStyle, Events, PermissionsBitField } = require("discord.js");
 const math = require('mathjs');
 const fetch = require('node-fetch');
 const https = require('https');
@@ -19,7 +19,7 @@ let timemo = 2628002880
 
 
 const mysql = require('mysql');
-const { timeStamp } = require("console");
+const { number } = require("mathjs");
 
 ////////////////////////////
 //      COINS DONNÉS     //
@@ -83,14 +83,53 @@ module.exports = {
             description: "Savoir combien de points vous avez sur vos comptes",
             type: 1,
         },
+        {
+            name: "ajouter",
+            description: "Ajouter des points",
+            type: 1,
+            options: [
+                {
+                    "name": "utilisateur",
+                    "description": "Cible",
+                    "type": 6,
+                    "required": true,
+                    "min_value": 1,
+                },{
+                    "name": "nombre",
+                    "description": "Nombre choisit",
+                    "type": 10,
+                    "required": true,
+                    "min_value": 1,
+                },
+            ]
+        },
+        {
+            name: "retirer",
+            description: "Retirer des points",
+            type: 1,
+            options: [
+                {
+                    "name": "utilisateur",
+                    "description": "Cible",
+                    "type": 6,
+                    "required": true,
+                    "min_value": 1,
+                },{
+                    "name": "nombre",
+                    "description": "Nombre choisit",
+                    "type": 10,
+                    "required": true,
+                    "min_value": 1,
+                },
+            ]
+        },
     ],
     permissions: {
         DEFAULT_MEMBER_PERMISSIONS: "SendMessages"
     },
     run: async (client, interaction, config) => {
 
-        let url = `https://localhost/api/index.php?id=${interaction.user.id}&conf=${config.Type}`;
-
+        let url = config.Url + "?id=" + interaction.user.id + "&conf=" + config.Type
         var connection = mysql.createConnection(config.Bdd);
 
         connection.query(gettimef(), function(error, results, fields) {
@@ -109,16 +148,13 @@ module.exports = {
                 fetch(url, settings)
                 .then(res => res.json())
                 .then((json) => {
-                    // do something with JSON
-                        var autotransfert = autotransfertf()
-                        // var AAAAAAbb = gettimef()
                         var gettime = gettimef()
                         
                         connection.query(gettime, function (error, results, fields) {
                                 var AAAAAAbb = results[0]
-                                const lefttime = new Date(math.chain(AAAAAAbb.dailytime).add(time)); 
-                                const timeLeft = lefttime - Date.now(); 
-                                const converted = convertMS(timeLeft); // Changes the ms to time
+                                var dateFormat = new Date(Number(AAAAAAbb.daily))
+                                dateFormat.setDate(dateFormat.getDate() + 1)
+                                const converted = convertMS(math.chain(dateFormat.valueOf()).subtract(Date.now())); // Donne 19430j
                             if(error){
                                 return interaction.reply({
                                     content: `<@${interaction.user.id}>`,
@@ -147,10 +183,31 @@ module.exports = {
                                         ephemeral: false,
                                     })
                                 }else{
-                                    if(autotransfert == "off"){
-                                        givecredits("discord", coins_daily, "dailytime", time)
+                                    /*if(autotransfert == "off"){
+                                        givecredits("discord", coins_daily, "dailytime", "dailyremind", "daily")
                                     }else{
-                                        givecredits("manager", coins_daily, "dailytime", time)
+                                        givecredits("manager", coins_daily, "dailytime", "dailyremind", "daily")
+                                    } */
+                                    if(config.Type = "1"){
+                                        let gettransf = `SELECT * FROM users WHERE id=${interaction.user.id}`
+                                        connection.query(gettransf, function (error, results, fields) {
+                                            if(results[0].autotransfert = "off"){
+                                                givecredits("discord", coins_daily, "dailytime", "dailyremind", "daily")
+                                            }else{
+                                                givecredits("manager", coins_daily, "dailytime", "dailyremind", "daily")
+                                            }
+                                        })
+                                    }else{
+                                        if(config.Type = "2"){
+                                            let gettransf = `SELECT * FROM botusers WHERE id=${interaction.user.id}`
+                                            connection.query(gettransf, function (error, results, fields) {
+                                                if(results[0].autotransfert = "off"){
+                                                    givecredits("discord", coins_daily, "dailytime", "dailyremind", "daily")
+                                                }else{
+                                                    givecredits("manager", coins_daily, "dailytime", "dailyremind", "daily")
+                                                }
+                                            })
+                                        }
                                     }
                                 }
                             }
@@ -158,9 +215,9 @@ module.exports = {
                             
                                 if(json.weekly == "false") { // if user on cooldown
                                     
-                                    const lefttime = new Date(math.chain(AAAAAAbb.weeklytime).add(timewe)); 
-                                    const timeLeft = lefttime - Date.now(); 
-                                    const converted = convertMS(timeLeft); // Changes the ms to time
+                                    var dateFormat = new Date(Number(AAAAAAbb.weekly))
+                                    dateFormat.setDate(dateFormat.getDate() + 7)
+                                    const converted = convertMS(math.chain(dateFormat.valueOf()).subtract(Date.now())); // Donne 19430j
                                     //add message here if code
                                     interaction.reply({
                                         content: `<@${interaction.user.id}>`,
@@ -172,10 +229,26 @@ module.exports = {
                                         ephemeral: false,
                                     })
                                 }else{
-                                    if(autotransfert == "off"){
-                                        givecredits("discord", coins_weekly, "weeklytime", timewe)
+                                    if(config.Type = "1"){
+                                        let gettransf = `SELECT * FROM users WHERE id=${interaction.user.id}`
+                                        connection.query(gettransf, function (error, results, fields) {
+                                            if(results[0].autotransfert = "off"){
+                                                givecredits("discord", coins_weekly, "weeklytime", "weeklyremind", "weekly")
+                                            }else{
+                                                givecredits("manager", coins_weekly, "weeklytime", "weeklyremind", "weekly")
+                                            }
+                                        })
                                     }else{
-                                        givecredits("manager", coins_weekly, "weeklytime", timewe)
+                                        if(config.Type = "2"){
+                                            let gettransf = `SELECT * FROM botusers WHERE id=${interaction.user.id}`
+                                            connection.query(gettransf, function (error, results, fields) {
+                                                if(results[0].autotransfert = "off"){
+                                                    givecredits("discord", coins_weekly, "weeklytime", "weeklyremind", "weekly")
+                                                }else{
+                                                    givecredits("manager", coins_weekly, "weeklytime", "weeklyremind", "weekly")
+                                                }
+                                            })
+                                        }
                                     }
                                 }
                             }
@@ -184,9 +257,9 @@ module.exports = {
                             
                                 if(json.monthly == "false") { // if user on cooldown
                                     
-                                    const lefttime = new Date(math.chain(AAAAAAbb.monthlytime).add(timemo));
-                                    const timeLeft = lefttime - Date.now(); 
-                                    const converted = convertMS(timeLeft); // Changes the ms to time
+                                    var dateFormat = new Date(Number(AAAAAAbb.monthly))
+                                    dateFormat.setDate(dateFormat.getDate() + 30.4167)
+                                    const converted = convertMS(math.chain(dateFormat.valueOf()).subtract(Date.now())); // Donne 19430j
                                     //add message here if code
                                     interaction.reply({
                                         content: `<@${interaction.user.id}>`,
@@ -198,10 +271,26 @@ module.exports = {
                                         ephemeral: false,
                                     })
                                 }else{
-                                    if(autotransfert == "off"){
-                                        givecredits("discord", coins_monthly, "monthlytime", timemo)
+                                    if(config.Type = "1"){
+                                        let gettransf = `SELECT * FROM users WHERE id=${interaction.user.id}`
+                                        connection.query(gettransf, function (error, results, fields) {
+                                            if(results[0].autotransfert = "off"){
+                                                givecredits("discord", coins_monthly, "monthlytime", "monthlyremind", "monthly")
+                                            }else{
+                                                givecredits("manager", coins_monthly, "monthlytime", "monthlyremind", "monthly")
+                                            }
+                                        })
                                     }else{
-                                        givecredits("manager", coins_monthly, "monthlytime", timemo)
+                                        if(config.Type = "2"){
+                                            let gettransf = `SELECT * FROM botusers WHERE id=${interaction.user.id}`
+                                            connection.query(gettransf, function (error, results, fields) {
+                                                if(results[0].autotransfert = "off"){
+                                                    givecredits("discord", coins_monthly, "monthlytime", "monthlyremind", "monthly")
+                                                }else{
+                                                    givecredits("manager", coins_monthly, "monthlytime", "monthlyremind", "monthly")
+                                                }
+                                            })
+                                        }
                                     }
                                 }
                             }
@@ -485,6 +574,142 @@ module.exports = {
                                 })
                             }
                         }
+                        if(interaction.options._subcommand == "ajouter"){
+                            if(!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)){
+                                return;
+                            }else{
+                                var moneytoadd = interaction.options.get('nombre').value
+                                var userr = interaction.options.get('utilisateur') 
+                                var user = userr.user.id
+                                if(config.Type == "1"){
+                                    var GetActualMoney = `SELECT * FROM users WHERE id="${user}"`
+                                    connection.query(GetActualMoney, function (err, rowsss, fields) {
+                                        if(rowsss.length == "0"){
+                                            return interaction.reply({
+                                                content: `<@${interaction.user.id}>`,
+                                                embeds:[
+                                                    new EmbedBuilder()
+                                                        .setDescription(`L'utilisateur n'est pas connecté.`)
+                                                        .setColor('Red')
+                                                ],
+                                                ephemeral: true,
+                                            })
+                                        }
+                                        var actualMoney = rowsss[0].balance
+                                        var NewBalance = math.chain(actualMoney).add(moneytoadd)
+                                        var SetNewBalance = `UPDATE users SET balance="${NewBalance}" WHERE id="${user}"`
+                                        connection.query(SetNewBalance, function (err, rows, fields) {
+                                            return interaction.reply({
+                                                content: `<@${interaction.user.id}>`,
+                                                embeds:[
+                                                    new EmbedBuilder()
+                                                        .setDescription(`L'utilisateur dispose désormais de ${NewBalance} points.`)
+                                                        .setColor('Green')
+                                                ],
+                                                ephemeral: true,
+                                            })
+                                        })
+                                    })
+                                }else{
+                                    var GetActualMoney = `SELECT * FROM botusers WHERE id="${user}"`
+                                    connection.query(GetActualMoney, function (err, rowsss, fields) {
+                                        if(rowsss.length == "0"){
+                                            return interaction.reply({
+                                                content: `<@${interaction.user.id}>`,
+                                                embeds:[
+                                                    new EmbedBuilder()
+                                                        .setDescription(`L'utilisateur n'est pas connecté.`)
+                                                        .setColor('Red')
+                                                ],
+                                                ephemeral: true,
+                                            })
+                                        }
+                                        var actualMoney = rowsss[0].balance
+                                        var NewBalance = math.chain(actualMoney).add(moneytoadd)
+                                        var SetNewBalance = `UPDATE botusers SET balance="${NewBalance}" WHERE id="${user}"`
+                                        connection.query(SetNewBalance, function (err, rows, fields) {
+                                            return interaction.reply({
+                                                content: `<@${interaction.user.id}>`,
+                                                embeds:[
+                                                    new EmbedBuilder()
+                                                        .setDescription(`L'utilisateur dispose désormais de ${NewBalance} points.`)
+                                                        .setColor('Green')
+                                                ],
+                                                ephemeral: true,
+                                            })
+                                        })
+                                    })
+                                }
+                            }
+                        }
+                        if(interaction.options._subcommand == "retirer"){
+                            if(!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)){
+                                return;
+                            }else{
+                                var moneytoadd = interaction.options.get('nombre').value
+                                var userr = interaction.options.get('utilisateur') 
+                                var user = userr.user.id
+                                if(config.Type == "1"){
+                                    var GetActualMoney = `SELECT * FROM users WHERE id="${user}"`
+                                    connection.query(GetActualMoney, function (err, rowsss, fields) {
+                                        if(rowsss.length == "0"){
+                                            return interaction.reply({
+                                                content: `<@${interaction.user.id}>`,
+                                                embeds:[
+                                                    new EmbedBuilder()
+                                                        .setDescription(`L'utilisateur n'est pas connecté.`)
+                                                        .setColor('Red')
+                                                ],
+                                                ephemeral: true,
+                                            })
+                                        }
+                                        var actualMoney = rowsss[0].balance
+                                        var NewBalance = math.subtract(actualMoney, moneytoadd)
+                                        var SetNewBalance = `UPDATE users SET balance="${NewBalance}" WHERE id="${user}"`
+                                        connection.query(SetNewBalance, function (err, rows, fields) {
+                                            return interaction.reply({
+                                                content: `<@${interaction.user.id}>`,
+                                                embeds:[
+                                                    new EmbedBuilder()
+                                                        .setDescription(`L'utilisateur dispose désormais de ${NewBalance} points.`)
+                                                        .setColor('Green')
+                                                ],
+                                                ephemeral: true,
+                                            })
+                                        })
+                                    })
+                                }else{
+                                    var GetActualMoney = `SELECT * FROM botusers WHERE id="${user}"`
+                                    connection.query(GetActualMoney, function (err, rowsss, fields) {
+                                        if(rowsss.length == "0"){
+                                            return interaction.reply({
+                                                content: `<@${interaction.user.id}>`,
+                                                embeds:[
+                                                    new EmbedBuilder()
+                                                        .setDescription(`L'utilisateur n'est pas connecté.`)
+                                                        .setColor('Red')
+                                                ],
+                                                ephemeral: true,
+                                            })
+                                        }
+                                        var actualMoney = rowsss[0].balance
+                                        var NewBalance = math.subtract(actualMoney, moneytoadd)
+                                        var SetNewBalance = `UPDATE botusers SET balance="${NewBalance}" WHERE id="${user}"`
+                                        connection.query(SetNewBalance, function (err, rows, fields) {
+                                            return interaction.reply({
+                                                content: `<@${interaction.user.id}>`,
+                                                embeds:[
+                                                    new EmbedBuilder()
+                                                        .setDescription(`L'utilisateur dispose désormais de ${NewBalance} points.`)
+                                                        .setColor('Green')
+                                                ],
+                                                ephemeral: true,
+                                            })
+                                        })
+                                    })
+                                }
+                            }
+                        }
                 })
             }
 
@@ -522,35 +747,19 @@ module.exports = {
             }
         }
 
-        function autotransfertf(){
-            if(config.Type == "1"){
-                var getautotransfert = `SELECT * FROM users WHERE id='${interaction.user.id}'`
-                connection.query(getautotransfert, function (error, results, fields) {
-                    return results.autotransfert;
-                })
-            }else{
-                if(config.Type == "2"){
-                    var getautotransfert = `SELECT * FROM botusers WHERE id='${interaction.user.id}'`
-                    connection.query(getautotransfert, function (error, results, fields) {
-                        return results.autotransfert;
-                    })
-                }
-            }
-        }
-
-        function givecredits(endroit, nombre, type, cooldown){
+        function givecredits(endroit, nombre, type, remind, secondtable){
             var datenow = Date.now()
             var datee = datenow.toString()
             var length = datenow.toString().length
             var Now = datee.substr(0, length-3)
             //var Now = Date.now()
             if(endroit == "discord"){
-                var getcredits = `SELECT * FROM botusers WHERE id='${interaction.user.id}'`
-                connection.query(getcredits, function (error, results, fields) {
-                    var creditsActuels = results[0].balance
-                    var Newcredits = math.chain(creditsActuels)
-                                        .add(nombre)
-                        var setCredits = `UPDATE botusers SET balance='${Newcredits}',${type}='${Now}' WHERE id='${interaction.user.id}'`       
+                if(config.Type == "1"){
+                    var getcredits = `SELECT * FROM users WHERE id='${interaction.user.id}'`
+                    connection.query(getcredits, function (error, results, fields) {
+                        var creditsActuels = results[0].balance
+                        var Newcredits = math.chain(creditsActuels).add(nombre)
+                        var setCredits = `UPDATE users SET balance='${Newcredits}',${type}='${Now}', ${secondtable}=${Date.now()} WHERE id='${interaction.user.id}'`       
                         connection.query(setCredits, function (error, results, fields) {
                             if(error){
                                 console.log(error)
@@ -558,16 +767,39 @@ module.exports = {
                             return interaction.reply({
                                 content: `<@${interaction.user.id}>`,
                                 embeds:[
-                                    new EmbedBuilder()
+                                        new EmbedBuilder()
                                         .setDescription(`:white_check_mark: | Vous venez de gagner ${nombre} (discord)`)
                                         .setColor('Green')
                                 ],
                                 ephemeral: false,
                             })
-                        })      
-                })
+                        })
+                    })
+                }else{
+                    var getcredits = `SELECT * FROM botusers WHERE id='${interaction.user.id}'`
+                    connection.query(getcredits, function (error, results, fields) {
+                        var creditsActuels = results[0].balance
+                        var Newcredits = math.chain(creditsActuels).add(nombre)
+                        var setCredits = `UPDATE botusers SET balance='${Newcredits}',${type}='${Now}', ${secondtable}=${Date.now()} WHERE id='${interaction.user.id}'`       
+                        connection.query(setCredits, function (error, results, fields) {
+                            if(error){
+                                console.log(error)
+                            }
+                            return interaction.reply({
+                                content: `<@${interaction.user.id}>`,
+                                embeds:[
+                                        new EmbedBuilder()
+                                        .setDescription(`:white_check_mark: | Vous venez de gagner ${nombre} (discord)`)
+                                        .setColor('Green')
+                                ],
+                                ephemeral: false,
+                            })
+                        })
+                    })
+                }
             }else if(endroit == "manager"){
                 if(config.Type == "1"){
+                    var setremind = `UPDATE users SET ${remind}="true" WHERE id='${interaction.user.id}'`
                     var getcredits = `SELECT * FROM users WHERE id='${interaction.user.id}'`
                     connection.query(getcredits, function (error, result, fields) {
                         var actualmail = result[0].email
@@ -577,12 +809,13 @@ module.exports = {
                         var Newcredits = math.chain(creditsActuels)
                         .add(nombre)
                             var setCredits = `UPDATE tblclients SET credit='${Newcredits}' WHERE email='${actualmail}'`  
-                            var Setaa = `UPDATE users SET ${type}='${Now}' WHERE id='${interaction.user.id}'`            
+                            var Setaa = `UPDATE users SET ${type}='${Now}', ${secondtable}=${Date.now()} WHERE id='${interaction.user.id}'`            
                             connection.query(setCredits, function (error, results, fields) {
                                 connection.query(Setaa, function (error, results, fields) {
                                     if(error){
                                         console.log(error)
                                     }
+                                    connection.query(setremind, function (error, result, fields) {})
                                 })
                                 return interaction.reply({
                                     content: `<@${interaction.user.id}>`,
@@ -598,6 +831,7 @@ module.exports = {
                     })
                 }else{
                     if(config.Type == "2"){
+                        var setremind = `UPDATE botusers SET ${remind}="true" WHERE id='${interaction.user.id}'`
                         var getcredits = `SELECT * FROM botusers WHERE id='${interaction.user.id}'`
                         connection.query(getcredits, function (error, result, fields) {
                             var actualmail = result[0].email
@@ -606,13 +840,14 @@ module.exports = {
                             var creditsActuels = results[0].money
                             var Newcredits = math.chain(creditsActuels)
                             .add(nombre)
-                                var setCredits = `UPDATE users SET money='${Newcredits}' WHERE email='${actualmail}'`  
+                                var setCredits = `UPDATE users SET money='${Newcredits}', ${secondtable}=${Date.now()} WHERE email='${actualmail}'`  
                                 var Setaa = `UPDATE botusers SET ${type}='${Now}' WHERE id='${interaction.user.id}'`            
                                 connection.query(setCredits, function (error, results, fields) {
                                     connection.query(Setaa, function (error, results, fields) {
                                         if(error){
                                             console.log(error)
                                         }
+                                        connection.query(setremind, function (error, result, fields) {})
                                     })
                                     return interaction.reply({
                                         content: `<@${interaction.user.id}>`,

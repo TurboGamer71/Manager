@@ -4,13 +4,13 @@
 2²: Configurez le status via le fichier de configuration
 2²: Configurez le CMS (Ligne 3: Type)
 
-3: Si vous souhaitez modifier les coins donnés pour les commandes daily/Weekly, 
+3: Si vous souhaitez modifier les coins donnés pour les commandes daily/weekly/monthly, 
 rendez vous dans le fichier économie ligne 25(commands/slash/general/economie.js)
 
 4: Mettez à jour les informations de connexion à la base de donnée dans le fichier php
-(index.php LIGNE 3)
+(/config/config.js LIGNE 3)
 
-5: Importez le fichier "index.php" sur votre site. Ensuite, entre l'url pour y accéder dans le fichier economie
+5: Importez le fichier "index.php" sur votre site. Ensuite, entre l'url pour y accéder dans le fichier config
 (commands/slash/general/economie.js LIGNE 87)
 
 6: Lancez le bot 
