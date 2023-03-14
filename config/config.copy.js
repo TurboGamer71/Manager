@@ -27,6 +27,6 @@ module.exports = {
 
   Divers: {
     activité: "Système d'économie WHMCS",
-    version: "1.8 - Dernière Maj",
+    version: "1.8.0 - Dernière Maj",
   }
 }
