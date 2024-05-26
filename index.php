@@ -33,19 +33,19 @@ if ($checked['monthlyremind'] == "" || $checked['monthlyremind'] == "true") {
     $monthlyremind = "\"monthlyremind\":\"false\"";
 }
 
-if ($checked['dailytime'] <= strtotime('-1 day')) {
+if ($checked['dailytime'] <= strtotime('1 day')) {
     $daily = "\"daily\":\"true\"";
 } else {
     $daily = "\"daily\":\"false\"";
 }
 
-if ($checked['weeklytime'] <= strtotime('-1 week')) {
+if ($checked['weeklytime'] <= strtotime('1 week')) {
     $weekly = "\"weekly\":\"true\"";
 } else {
     $weekly = "\"weekly\":\"false\"";
 }
 
-if ($checked['monthlytime'] <= strtotime('-1 month')) {
+if ($checked['monthlytime'] <= strtotime('1 month')) {
     $monthly = "\"monthly\":\"true\"";
 } else {
     $monthly = "\"monthly\":\"false\"";
