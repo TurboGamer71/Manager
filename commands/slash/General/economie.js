@@ -6,6 +6,7 @@ const httpsAgent = new https.Agent({
       rejectUnauthorized: false,
     });
 const config = require('../../../config/config.js');
+const moment = require('moment');
 const cooldownwe = new Collection();
 const cooldownda = new Collection();
 const cooldownco = new Collection();
@@ -25,9 +26,9 @@ const { number } = require("mathjs");
 //      COINS DONNÉS     //
 //////////////////////////
 
-var coins_daily = "60"
-var coins_weekly = "120"
-var coins_monthly = "200"
+var coins_daily = "1"
+var coins_weekly = "2"
+var coins_monthly = "3"
 
 //////////////////////////
 //         CODE        //
@@ -144,17 +145,13 @@ module.exports = {
                     components: [],
                 });
             }else{
-                let settings = { method: "Get", agent: httpsAgent, };        
+                let settings = { method: "Get", agent: httpsAgent, };
                 fetch(url, settings)
                 .then(res => res.json())
                 .then((json) => {
                         var gettime = gettimef()
                         
                         connection.query(gettime, function (error, results, fields) {
-                                var AAAAAAbb = results[0]
-                                var dateFormat = new Date(Number(AAAAAAbb.daily))
-                                dateFormat.setDate(dateFormat.getDate() + 1)
-                                const converted = convertMS(math.chain(dateFormat.valueOf()).subtract(Date.now())); // Donne 19430j
                             if(error){
                                 return interaction.reply({
                                     content: `<@${interaction.user.id}>`,
@@ -171,13 +168,24 @@ module.exports = {
                             //  exports.oldbalance = old_balance;
 
                             if(interaction.options._subcommand == "daily"){
-                                if(json.daily == "false") { // if user on cooldown
+                                if(json.daily == "true") { // if user on cooldown
                                     //add message here if code
+                                    const date = moment.unix(results[0].dailytime);
+                                    const datePlusUnJour = date.add(1, 'days');
+                                    const tempsRestant = datePlusUnJour.diff(moment(), 'milliseconds');
+                                    const secondes = Math.floor(tempsRestant / 1000) % 60;
+
+                                    // Convertir en minutes
+                                    const minutes = Math.floor(tempsRestant / (1000 * 60)) % 60;
+
+                                    // Convertir en heures
+                                    const heures = Math.floor(tempsRestant / (1000 * 60 * 60)) % 24;
+
                                     interaction.reply({
                                         content: `<@${interaction.user.id}>`,
                                         embeds:[
                                             new EmbedBuilder()
-                                                .setDescription('Vous devez encore patienter: \n' + `${converted['d']} jour, ${converted['h']} heures, ${converted['m']} minutes, ${converted['s']} secondes.`)
+                                                .setDescription('Vous devez encore patienter: \n' + `${heures} heures, ${minutes} minutes, ${secondes} secondes.`)
                                                 .setColor('Red')
                                         ],
                                         ephemeral: false,
@@ -188,20 +196,20 @@ module.exports = {
                                     }else{
                                         givecredits("manager", coins_daily, "dailytime", "dailyremind", "daily")
                                     } */
-                                    if(config.Type = "1"){
+                                    if(config.Type === "1"){
                                         let gettransf = `SELECT * FROM users WHERE id=${interaction.user.id}`
                                         connection.query(gettransf, function (error, results, fields) {
-                                            if(results[0].autotransfert = "off"){
+                                            if(results[0].autotransfert == "off"){
                                                 givecredits("discord", coins_daily, "dailytime", "dailyremind", "daily")
                                             }else{
                                                 givecredits("manager", coins_daily, "dailytime", "dailyremind", "daily")
                                             }
                                         })
                                     }else{
-                                        if(config.Type = "2"){
+                                        if(config.Type === "2"){
                                             let gettransf = `SELECT * FROM botusers WHERE id=${interaction.user.id}`
                                             connection.query(gettransf, function (error, results, fields) {
-                                                if(results[0].autotransfert = "off"){
+                                                if(results[0].autotransfert == "off"){
                                                     givecredits("discord", coins_daily, "dailytime", "dailyremind", "daily")
                                                 }else{
                                                     givecredits("manager", coins_daily, "dailytime", "dailyremind", "daily")
@@ -213,36 +221,46 @@ module.exports = {
                             }
                             if(interaction.options._subcommand == "weekly"){
                             
-                                if(json.weekly == "false") { // if user on cooldown
+                                if(json.weekly == "true") { // if user on cooldown
                                     
-                                    var dateFormat = new Date(Number(AAAAAAbb.weekly))
-                                    dateFormat.setDate(dateFormat.getDate() + 7)
-                                    const converted = convertMS(math.chain(dateFormat.valueOf()).subtract(Date.now())); // Donne 19430j
-                                    //add message here if code
+                                    const date = moment.unix(results[0].dailytime);
+                                    const datePlusUnJour = date.add(7, 'days');
+                                    const tempsRestant = datePlusUnJour.diff(moment(), 'milliseconds');
+                                    const secondes = Math.floor(tempsRestant / 1000) % 60;
+
+                                    // Convertir en minutes
+                                    const minutes = Math.floor(tempsRestant / (1000 * 60)) % 60;
+
+                                    // Convertir en heures
+                                    const heures = Math.floor(tempsRestant / (1000 * 60 * 60)) % 24;
+
+                                    // Convertir en jours
+                                    const jours = Math.floor(tempsRestant / (1000 * 60 * 60 * 24));
+
                                     interaction.reply({
                                         content: `<@${interaction.user.id}>`,
                                         embeds:[
                                             new EmbedBuilder()
-                                                .setDescription('Vous devez encore patienter: \n' + `${converted['d']} jours, ${converted['h']} heures, ${converted['m']} minutes, ${converted['s']} secondes.`)
+                                            .setDescription('Vous devez encore patienter: \n' + `${jours} jours, ${heures} heures, ${minutes} minutes, ${secondes} secondes.`)
                                                 .setColor('Red')
                                         ],
                                         ephemeral: false,
                                     })
                                 }else{
-                                    if(config.Type = "1"){
+                                    if(config.Type === "1"){
                                         let gettransf = `SELECT * FROM users WHERE id=${interaction.user.id}`
                                         connection.query(gettransf, function (error, results, fields) {
-                                            if(results[0].autotransfert = "off"){
+                                            if(results[0].autotransfert == "off"){
                                                 givecredits("discord", coins_weekly, "weeklytime", "weeklyremind", "weekly")
                                             }else{
                                                 givecredits("manager", coins_weekly, "weeklytime", "weeklyremind", "weekly")
                                             }
                                         })
                                     }else{
-                                        if(config.Type = "2"){
+                                        if(config.Type === "2"){
                                             let gettransf = `SELECT * FROM botusers WHERE id=${interaction.user.id}`
                                             connection.query(gettransf, function (error, results, fields) {
-                                                if(results[0].autotransfert = "off"){
+                                                if(results[0].autotransfert == "off"){
                                                     givecredits("discord", coins_weekly, "weeklytime", "weeklyremind", "weekly")
                                                 }else{
                                                     givecredits("manager", coins_weekly, "weeklytime", "weeklyremind", "weekly")
@@ -255,36 +273,46 @@ module.exports = {
 
                             if(interaction.options._subcommand == "monthly"){
                             
-                                if(json.monthly == "false") { // if user on cooldown
+                                if(json.monthly == "true") { // if user on cooldown
                                     
-                                    var dateFormat = new Date(Number(AAAAAAbb.monthly))
-                                    dateFormat.setDate(dateFormat.getDate() + 30.4167)
-                                    const converted = convertMS(math.chain(dateFormat.valueOf()).subtract(Date.now())); // Donne 19430j
-                                    //add message here if code
+                                    const date = moment.unix(results[0].monthlytime);
+                                    const datePlusUnJour = date.add(1, 'months');
+                                    const tempsRestant = datePlusUnJour.diff(moment(), 'milliseconds');
+                                    const secondes = Math.floor(tempsRestant / 1000) % 60;
+
+                                    // Convertir en minutes
+                                    const minutes = Math.floor(tempsRestant / (1000 * 60)) % 60;
+
+                                    // Convertir en heures
+                                    const heures = Math.floor(tempsRestant / (1000 * 60 * 60)) % 24;
+
+                                    // Convertir en jours
+                                    const jours = Math.floor(tempsRestant / (1000 * 60 * 60 * 24));
+
                                     interaction.reply({
                                         content: `<@${interaction.user.id}>`,
                                         embeds:[
                                             new EmbedBuilder()
-                                                .setDescription('Vous devez encore patienter: \n' + `${converted['d']} jours, ${converted['h']} heures, ${converted['m']} minutes, ${converted['s']} secondes.`)
+                                            .setDescription('Vous devez encore patienter: \n' + `${jours} jours, ${heures} heures, ${minutes} minutes, ${secondes} secondes.`)
                                                 .setColor('Red')
                                         ],
                                         ephemeral: false,
                                     })
                                 }else{
-                                    if(config.Type = "1"){
+                                    if(config.Type === "1"){
                                         let gettransf = `SELECT * FROM users WHERE id=${interaction.user.id}`
                                         connection.query(gettransf, function (error, results, fields) {
-                                            if(results[0].autotransfert = "off"){
+                                            if(results[0].autotransfert == "off"){
                                                 givecredits("discord", coins_monthly, "monthlytime", "monthlyremind", "monthly")
                                             }else{
                                                 givecredits("manager", coins_monthly, "monthlytime", "monthlyremind", "monthly")
                                             }
                                         })
                                     }else{
-                                        if(config.Type = "2"){
+                                        if(config.Type === "2"){
                                             let gettransf = `SELECT * FROM botusers WHERE id=${interaction.user.id}`
                                             connection.query(gettransf, function (error, results, fields) {
-                                                if(results[0].autotransfert = "off"){
+                                                if(results[0].autotransfert == "off"){
                                                     givecredits("discord", coins_monthly, "monthlytime", "monthlyremind", "monthly")
                                                 }else{
                                                     givecredits("manager", coins_monthly, "monthlytime", "monthlyremind", "monthly")
@@ -739,19 +767,16 @@ module.exports = {
 
         function gettimef(){
             if(config.Type == "1"){
-                return "SELECT * FROM users";
+                return `SELECT * FROM users WHERE id=${interaction.user.id}`;
             }else{
                 if(config.Type == "2"){
-                    return "SELECT * FROM botusers";
+                    return `SELECT * FROM botusers WHERE id=${interaction.user.id}`;
                 }
             }
         }
 
         function givecredits(endroit, nombre, type, remind, secondtable){
-            var datenow = Date.now()
-            var datee = datenow.toString()
-            var length = datenow.toString().length
-            var Now = datee.substr(0, length-3)
+            const Now = Math.floor(Date.now() / 1000);
             //var Now = Date.now()
             if(endroit == "discord"){
                 if(config.Type == "1"){
